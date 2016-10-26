@@ -47,8 +47,9 @@ const KEY     	= { ESC: 27, SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40 },
 
 // Globals
 var grilha,
-	speed = 500,
-	frames;
+	speed = 1000,
+	frames,
+	peca;
 
 // Class Grid \\
 /*
@@ -65,7 +66,7 @@ class grid {
 		for (var h = 0; h < y; h++) {
 			matrix[h] = [];
 			for (var w = 0; w < x; w++) {
-				matrix[h][w] = new Casa(w,h);
+				matrix[h][w] = new CasaGrid(w,h, "EMPTY");
 			}
 		}
 
@@ -125,7 +126,7 @@ class grid {
 	}
 
 	draw(peca) {
-
+		this.grid.appendChild(peca.HTML);
 	}
 
 	collision(peca) {
@@ -146,8 +147,6 @@ class grid {
 class Peca {
 	constructor(x, y, id_type) {
 		this.id_type = id_type;
-		this.x = x;
-		this.y = y;
 
 		this.matrix = STRUCTURE[id_type].map(function(arr) {
 			return arr.slice();
@@ -155,15 +154,13 @@ class Peca {
 
 		this.grid = document.createElement("div");
 		this.grid.id = "peca";
+		this.grid.style.position = "absolute";
 
 		var length = this.matrix.length;
 		for (var h = 0; h < length; h++) {
 			for (var w = 0; w < length; w++) {
 				// Change 1 and 0 for Casa Object
-				this.matrix[h][w] = this.matrix[h][w] ? new Casa((this.x + w), (this.y + h - length + 1), id_type) : new Casa((this.x + w), (this.y + h - length + 1));
-				// console.log("this.matrix["+h+"]["+w+"]");
-				// console.log("x: " + (this.x + w) + ", y: " + (this.y + h - length + 1));
-				// console.log(this.matrix[h][w]);
+				this.matrix[h][w] = this.matrix[h][w] ? new Casa(id_type) : new Casa("EMPTY");
 				// Fill graphic variable grid
 				this.grid.appendChild(this.matrix[h][w].HTML);
 			}
@@ -177,16 +174,19 @@ class Peca {
 			length = this.matrix.length;
 		for (var h = 0; h < length; h++){
 		    for (var w = 0; w < length; w++){
-		        temp[h][w] = this.matrix[w][length - h - 1];
+		    	temp[h][w] = this.matrix[w][length - h - 1].status ? 1 : 0;
 		    }
 		}
 		for (var h = 0; h < length; h++){
 		    for (var w = 0; w < length; w++){
-		        temp[h][length - w - 1].move(this.x + h, this.y + w - length + 1);
+		    	if (temp[h][w] === 1) {
+		        	this.matrix[h][w].type = this.id_type;
+		        } else {
+		        	this.matrix[h][w].initalize();
+		        }
 		    }
 		}
-
-		this.matrix = temp;
+		this.translate();
 	}
 
 	rotateToRight() {
@@ -194,12 +194,21 @@ class Peca {
 				return arr.slice();
 			}),
 			length = this.matrix.length;
-		for(var h = 0; h < length; h++){
+		for (var h = 0; h < length; h++){
 		    for (var w = 0; w < length; w++){
-		        temp[h][w] = this.matrix[length - w - 1][h];
+		        temp[h][w] = this.matrix[length - w - 1][h].status ? 1 : 0;
 		    }
 		}
-		this.matrix = temp;
+		for (var h = 0; h < length; h++){
+		    for (var w = 0; w < length; w++){
+		    	if (temp[h][w] === 1) {
+		        	this.matrix[h][w].type = this.id_type;
+		        } else {
+		        	this.matrix[h][w].initalize();
+		        }
+		    }
+		}
+		this.translate();
 	}
 
 	translate() {
@@ -214,7 +223,7 @@ class Peca {
 		lines:
 		for (var h = length - 1; h >= 0 ; h--) {
 			for (var w = length - 1; w >= 0 ; w--) {
-				if (this.matrix[h][w] === 1) {
+				if (this.matrix[h][w].status) {
 					break lines;
 				}
 			}
@@ -224,7 +233,7 @@ class Peca {
 		columns:
 		for (var w = 0; w < length; w++) {
 			for (var h = 0; h < length; h++) {
-				if (this.matrix[h][w] === 1) {
+				if (this.matrix[h][w].status) {
 					break columns;
 				}
 			}
@@ -234,22 +243,27 @@ class Peca {
 		for (var h = length - 1; h >= 0; h--) {
 			for (var w = length - 1; w >= 0; w--) {
 				if (h - emptyLine >= 0 && w + emptyColumn < length) {
-					temp[h][w] = this.matrix[h - emptyLine][w + emptyColumn];
+					temp[h][w] = this.matrix[h - emptyLine][w + emptyColumn].status ? 1 : 0;
 				}
 			}
 		}
-		this.matrix = temp;
+		for (var h = 0; h < length; h++){
+		    for (var w = 0; w < length; w++){
+		    	if (temp[h][w] === 1) {
+		        	this.matrix[h][w].type = this.id_type;
+		        } else {
+		        	this.matrix[h][w].initalize();
+		        }
+		    }
+		}
 	}
 
-	move(x, y) {
-		var length = this.matrix.length;
-		for (var h = 0; h < length; h++) {
-			for (var w = 0; w < length; w++) {
-				this.matrix[h][w].move(x + h, y + w - length + 1);
-			}
-		}
-		this.x = x;
-		this.y = y;
+	moveDown() {
+		this.grid.offsetTop += CELL_SIZE;
+	}
+
+	get HTML() {
+		return this.grid;
 	}
 }
 
@@ -260,17 +274,13 @@ class Peca {
 	id_type : 7 tipos possiveis (ver TYPE)
 */
 class Casa {
-	constructor(x, y, id_type) {
-		this.x = x;
-		this.y = y;
-		this.id_type = typeof id_type !== 'undefined' ? id_type : TYPE.EMPTY;
+	constructor(id_type) {
 		this.casa = document.createElement("div");
-		// this.casa.id = this.y + "_" + this.x;
+		this.type = typeof id_type !== 'undefined' ? id_type : TYPE.EMPTY;
 	}
 
-	move(x, y) {
-		this.x = x;
-		this.y = y;
+	initalize() {
+		this.type = "EMPTY";
 	}
 
 	get color() {
@@ -297,6 +307,21 @@ class Casa {
 	get HTML() {
 		return this.casa;
 	}
+
+
+}
+
+class CasaGrid extends Casa {
+	constructor(x, y, id_type) {
+		super(id_type);
+		this.x = x;
+		this.y = y;
+	}
+
+	move(x, y) {
+		this.x = x;
+		this.y = y;
+	}
 }
 
 // Main
@@ -312,11 +337,6 @@ function initGame() {
 	grilha = new grid(WIDTH, HEIGHT);
 	document.body.appendChild(grilha.HTML);
 	frames = 0;
-	var peca = new Peca(0, 0, "L");
-	console.log(peca.matrix);
-	peca.rotateToLeft();
-	// setTimeout(function(){console.log(peca.matrix)}, 5000);
-	// setTimeout(function(){peca.rotateToLeft()}, 5000);
 	setTimeout(function(){console.log(peca.matrix)}, 5000);
 	// document.getElementById('matrix').style.display = 'none';
 	// document.getElementById('matrix').style.display = 'block';
@@ -324,11 +344,14 @@ function initGame() {
 
 function updateGame() {
 	var type = TYPE[Math.floor(Math.random() * 7)];
-	// if (!peca) {
-	// 	peca = new Peca(0, 0, type);
-	// }
-	// grilha.draw(peca);
+	if (!peca) {
+		peca = new Peca(0, 0, type);
+		grilha.draw(peca);
+	}
+	peca.rotateToRight();
+	// peca.moveDown();
 	grilha.matrix[10][10].type = type;
+
 	// Variable speed 
 	if (frames++ / (ITERATIONS * HEIGHT) % 1 == 0) {
 		// 1/n
