@@ -241,6 +241,14 @@ class Peca {
 		this.grid.id = "peca";
 		this.grid.style.position = "absolute";
 		this.grid.style.top = (y - 4) * CELL_SIZE + "px";
+		this.grid.style.left = x * CELL_SIZE + "px";
+		if(id_type == "I"){
+			this.grid.style.right = 4;
+		}else if(id_type == "O" || id_type == "L" || id_type == "L_INVERSE"){
+			this.grid.style.right = 5;
+		}else if(id_type == "T" || id_type == "U"){
+			this.grid.style.right = 6;
+		}
 
 		var length = this.matrix.length;
 		for (var h = 0; h < length; h++) {
@@ -353,20 +361,20 @@ class Peca {
 	}
 
 	moveRight() {
-		var left = isNaN(parseInt(this.grid.style.left)) ? 0 : parseInt(this.grid.style.left);
+		var left = isNaN(parseInt(this.grid.style.left)) ? 4 : parseInt(this.grid.style.left);
 		if (left >= 0 && left < MAX_WIDTH) {
 			this.grid.style.left = left + CELL_SIZE + "px";
 			this.grid.style.right = MAX_WIDTH - left - CELL_SIZE + "px";
-			if (this.x < WIDTH) this.x++;
+			this.x++;
 		}
 	}
 
 	moveLeft() {
-		var right = isNaN(parseInt(this.grid.style.right)) ? 0 : parseInt(this.grid.style.right);
-		if (right >= 0 && right < MAX_WIDTH) {
-			this.grid.style.right = right + CELL_SIZE + "px";
-			this.grid.style.left = MAX_WIDTH - right - CELL_SIZE + "px";
-			if (this.x > 0) this.x--;
+		var left = isNaN(parseInt(this.grid.style.left)) ? 4 : parseInt(this.grid.style.left);
+		if(left > 0 && left < MAX_WIDTH) {
+			this.grid.style.left = left - CELL_SIZE + "px";
+			this.grid.style.right = MAX_WIDTH - parseInt(this.grid.style.right) - CELL_SIZE + "px";
+			this.x--;
 		}
 	}
 
@@ -450,7 +458,7 @@ function initGame() {
 function updateGame() {
 	var type = TYPE[Math.floor(Math.random() * 6)];
 	if (!peca) {
-		peca = new Peca(0, 0, type);
+		peca = new Peca(4, 0, type);
 		grilha.create(peca);
 	}			
 
