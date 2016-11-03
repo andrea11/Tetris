@@ -42,7 +42,9 @@ const KEY     	= { ESC: 27, SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40 },
     			},
     WIDTH 		= 12,
     HEIGHT 		= 24,
-    CELL_SIZE	= 15,
+    CELL_SIZE	= 15 + 2 + 2,
+    MAX_WIDTH 	= WIDTH * CELL_SIZE,
+    MAX_HEIGHT	= HEIGHT * CELL_SIZE,
     ITERATIONS 	= 5;
 
 // Globals
@@ -125,13 +127,34 @@ class grid {
 		}
 	}
 
-	draw(peca) {
+	create(peca) {
 		this.grid.appendChild(peca.HTML);
 	}
 
-	collision(peca) {
-
+	destroy(peca) {
+		this.grid.removeChild(peca.HTML);
 	}
+
+	draw(peca) {
+		var x = peca.x,
+			y = peca.y,
+			length = peca.matrix.length;
+		for (var h = 0; h < length; h++){
+		    for (var w = 0; w < length; w++){
+		    	if (peca.matrix[h][w].status) {
+		    		this.matrix[y + h][x + w].type = peca.matrix[h][w].type;
+		    	}
+		    }
+		}
+	}
+
+	collision(peca) {
+		if (peca.y === 24) {
+			return true;
+		}
+	}
+
+
 
 	get HTML() {
 		return this.grid;
@@ -147,6 +170,8 @@ class grid {
 class Peca {
 	constructor(x, y, id_type) {
 		this.id_type = id_type;
+		this.x = x;
+		this.y = y;
 
 		this.matrix = STRUCTURE[id_type].map(function(arr) {
 			return arr.slice();
@@ -155,6 +180,7 @@ class Peca {
 		this.grid = document.createElement("div");
 		this.grid.id = "peca";
 		this.grid.style.position = "absolute";
+		this.grid.style.top = (y - 4) * CELL_SIZE + "px";
 
 		var length = this.matrix.length;
 		for (var h = 0; h < length; h++) {
@@ -259,7 +285,29 @@ class Peca {
 	}
 
 	moveDown() {
-		this.grid.offsetTop += CELL_SIZE;
+		var top = isNaN(parseInt(this.grid.style.top)) ? 0 : parseInt(this.grid.style.top);
+		if (top >= - 4 * CELL_SIZE && top < MAX_HEIGHT - 4 * CELL_SIZE) {
+			this.grid.style.top = top + CELL_SIZE + "px";
+			this.y++;
+		}
+	}
+
+	moveRight() {
+		var left = isNaN(parseInt(this.grid.style.left)) ? 0 : parseInt(this.grid.style.left);
+		if (left >= 0 && left < MAX_WIDTH) {
+			this.grid.style.left = left + CELL_SIZE + "px";
+			this.grid.style.right = MAX_WIDTH - left - CELL_SIZE + "px";
+			this.x++;
+		}
+	}
+
+	moveLeft() {
+		var right = isNaN(parseInt(this.grid.style.right)) ? 0 : parseInt(this.grid.style.right);
+		if (right >= 0 && right < MAX_WIDTH) {
+			this.grid.style.right = right + CELL_SIZE + "px";
+			this.grid.style.left = MAX_WIDTH - right - CELL_SIZE + "px";
+			this.x--;
+		}
 	}
 
 	get HTML() {
@@ -337,20 +385,21 @@ function initGame() {
 	grilha = new grid(WIDTH, HEIGHT);
 	document.body.appendChild(grilha.HTML);
 	frames = 0;
-	setTimeout(function(){console.log(peca.matrix)}, 5000);
-	// document.getElementById('matrix').style.display = 'none';
-	// document.getElementById('matrix').style.display = 'block';
 }
 
 function updateGame() {
-	var type = TYPE[Math.floor(Math.random() * 7)];
+	var type = TYPE[Math.floor(Math.random() * 6)];
 	if (!peca) {
 		peca = new Peca(0, 0, type);
+		grilha.create(peca);
+	}			
+	peca.moveDown();
+
+	if (grilha.collision(peca)) {
 		grilha.draw(peca);
+		grilha.destroy(peca);
+		peca = null;
 	}
-	peca.rotateToRight();
-	// peca.moveDown();
-	grilha.matrix[10][10].type = type;
 
 	// Variable speed 
 	if (frames++ / (ITERATIONS * HEIGHT) % 1 == 0) {
@@ -358,4 +407,18 @@ function updateGame() {
 		speed -= speed > 300 ? 20 : 0;
 	}
 	setTimeout(updateGame, speed);
+}
+
+function keyEvent(event) {
+	var key = event.keyCode || event.which;
+	if (key == KEY.UP) {
+	} else if (key == KEY.RIGHT) {
+		peca.moveRight();
+	} else if (key == KEY.LEFT) {
+		peca.moveLeft();
+	} else if (key == KEY.DOWN) {
+		peca.moveDown();
+	} else if (key == KEY.SPACE) {
+		peca.rotateToRight();
+	}
 }

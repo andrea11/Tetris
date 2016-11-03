@@ -7,8 +7,11 @@
 		#matrix {
 			margin: 10px;
 			border-width: 2px;
-			width: 238px;
-			height: 504px;
+			width: 228px;
+			height: 456px;
+			position: relative;
+			overflow: hidden;
+			z-index: 9999;
 		}
 		#matrix div{
 			margin: 1px;
@@ -49,18 +52,19 @@
 			width: 76px;
 			height: 76px;
 			border-width: 0;
+			margin: 0;
 			background-color: transparent;
-			position: absolute;
+			position: relative;
+			z-index: 0;
 		}
 		#peca div{
 			margin: 1px;
 			width: 15px;
 			height: 15px;
-			background-color: red;
 			float: left;
 		}
 	</style>
 </head>
-<body>
+<body onkeydown="keyEvent(event)">
 </body>
 </html>
