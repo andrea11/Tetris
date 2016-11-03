@@ -200,6 +200,22 @@ class grid {
 		return false;
 	}
 
+	collisionRotation(peca) {
+		var x = peca.x,
+			y = peca.y,
+			length = peca.matrix.length;
+		for (var h = 0; h < length; h++){
+		    for (var w = 0; w < length; w++){
+				// if (y - 4 + h > 0 && x + w + 1 >= 0) {
+			 //    	if (peca.matrix[h][w].status && this.matrix[y - 4 + h][x + w + 1].status) {
+			 //    		return true;
+			 //    	}
+			 //    }
+			}
+		}
+		return false;
+	}
+
 	get HTML() {
 		return this.grid;
 	}
