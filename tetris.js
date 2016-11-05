@@ -531,20 +531,18 @@ class Chronometer {
 	}
 
 	start() {
-		this.endTime = new Date();
-		this.time = this.endTime - this.startTime;
+		this.actualTime = new Date();
+		this.time = this.actualTime - this.startTime;
 		this.time = new Date(this.time);
-		this.time.setHours(this.time.getHours()+2);
 		var sec = this.time.getSeconds();
 		var min = this.time.getMinutes();
-		var hr = this.time.getHours();
 		if (min < 10){
 			min = "0" + min;
 		}
 		if (sec < 10){
 			sec = "0" + sec;
 		}
-		this.chrono.innerHTML = hr + ":" + min + ":" + sec;
+		this.chrono.innerHTML = min + ":" + sec;
 		var temp = this;
 		this.timerID = setTimeout(function () {
      		temp.start();
