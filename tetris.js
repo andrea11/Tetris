@@ -94,7 +94,7 @@ class Grid {
 		var lines = 0,
 			lineFilled,
 			height = peca.y;
-		for (var h = peca.y - 1; h >= peca.y - 4; h--) {
+		for (var h = peca.y - 1; h >= peca.y - 4 && h > 0; h--) {
 			lineFilled = true;
 			for (var w = WIDTH - 1; w >= 0; w--) {
 				if (!this.matrix[h][w].status) {
@@ -167,11 +167,10 @@ class Grid {
 		if (y === 24) {
 			return true;
 		}
-
 		for (var h = 0; h < length; h++) {
 		    for (var w = 0; w < length; w++) {
-				if (y - 4 + h + 1 > 0) {
-			    	if (peca.matrix[h][w].status && this.matrix[y - 4 + h + 1][x + w].status) {
+				if (y - 3 + h > 0) {
+			    	if (peca.matrix[h][w].status && this.matrix[y - 3 + h][x + w].status) {
 			    		return true;
 			    	}
 			    }
@@ -626,7 +625,8 @@ function keyEvent(event) {
 				}
 				grilha.draw(peca);
 				grilha.destroy(peca);
-				grilha.checkLines(peca);
+				var lines = grilha.checkLines(peca);
+				if (lines) score.addLines(lines);
 				peca = null;
 			} else {
 				peca.moveDown();
