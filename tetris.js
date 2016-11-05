@@ -199,8 +199,6 @@ class Grid {
 	}
 
 	collisionBorderRight(peca) {
-			console.log("ponta: " + parseInt(peca.grid.style.right));
-			console.log("final: " + MAX_WIDTH);
 		if (parseInt(peca.grid.style.right) >= MAX_WIDTH) {
 			return true;
 		}
@@ -245,9 +243,7 @@ class Grid {
 		for (var h = 0; h < length; h++) {
 		    for (var w = 0; w < length; w++) {
 				if (y - 4 + h > 0) {
-					console.log("temp y: " + y);
 			    	if (matrixTemp[h][w] == 1 && (x + w >= WIDTH || this.matrix[y - h - 1][x + w].status)) {
-			    		console.log("deu true");
 			    		return true;
 			    	}
 			    }
@@ -522,6 +518,10 @@ class Score {
 		this.lines.innerHTML = parseInt(this.lines.innerHTML) + lines;
 		this.score.innerHTML = parseInt(this.score.innerHTML) + points;
 	}
+
+	getPoints(){
+		return parseInt(this.score.innerHTML);
+	}
 }
 
 class Chronometer {
@@ -595,12 +595,13 @@ function updateGame() {
 	} else {	
 		peca.moveDown();
 	}
-
+	var futureSpeed = STARTINGSPEED - (parseInt(score.getPoints() / POINTSCALE) * 50)
+	speed = futureSpeed > 30 ? futureSpeed : 30;
 	// Variable speed 
-	if (score / POINTSCALE % 1 == 0) {
-		// 1/n
-		speed -= speed > 200 ? 100 : 0; 
-	}
+	// if (score / POINTSCALE % 1 == 0) {
+	// 	// 1/n
+	// 	speed -= speed > 200 ? 100 : 0; 
+	// }
 	game = setTimeout(updateGame, speed);
 }
 
