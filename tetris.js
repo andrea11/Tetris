@@ -116,7 +116,7 @@ class Grid {
 						end = 0;
 					}
 					this.matrix[j][k].type = this.matrix[j-1][k].type;
-					this.matrix[j-1][k].initalize();
+					this.matrix[j-1][k].initialize();
 				}
 				if(end) break;
 			}
@@ -337,7 +337,7 @@ class Peca {
 		    	if (temp[h][w] === 1) {
 		        	this.matrix[h][w].type = this.id_type;
 		        } else {
-		        	this.matrix[h][w].initalize();
+		        	this.matrix[h][w].initialize();
 		        }
 		    }
 		}
@@ -359,7 +359,7 @@ class Peca {
 		    	if (temp[h][w] === 1) {
 		        	this.matrix[h][w].type = this.id_type;
 		        } else {
-		        	this.matrix[h][w].initalize();
+		        	this.matrix[h][w].initialize();
 		        }
 		    }
 		}
@@ -412,7 +412,7 @@ class Peca {
 						this.grid.style.right = left + ((w + 1) * CELL_SIZE) + "px";
 					}
 		        } else {
-		        	this.matrix[h][w].initalize();
+		        	this.matrix[h][w].initialize();
 		        }
 		    }
 		}
@@ -464,7 +464,7 @@ class Casa {
 		this.type = typeof id_type !== 'undefined' ? id_type : TYPE.EMPTY;
 	}
 
-	initalize() {
+	initialize() {
 		this.type = "EMPTY";
 	}
 
