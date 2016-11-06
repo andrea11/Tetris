@@ -8,14 +8,13 @@
 			font-size: 42px;
 		}
 		#infos {
-			/*float: right;*/
+			float: right;
 			color: white; 
 			font-family: 'Helvetica Neue', sans-serif; 
 			font-size: 20px; 
 			line-height: 24px;
 			/*margin: 0 0 24px; */
-			margin: auto;
-			width: 9%;
+			margin-right: 50px;
 		}
 		#matrix {
 			margin: 0 auto;

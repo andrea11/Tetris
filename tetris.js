@@ -55,11 +55,8 @@ var grilha,
 	game,
 	chronometer,
 	score,
-<<<<<<< HEAD
-	lastSpeed;
-=======
+	lastSpeed,
 	gameState;
->>>>>>> 858f2acbf8ab0f1f1fe623e900c5c4888fc6691a
 
 // Class Grid \\
 /*
@@ -120,7 +117,7 @@ class Grid {
 						end = 0;
 					}
 					this.matrix[j][k].type = this.matrix[j-1][k].type;
-					this.matrix[j-1][k].initialize();
+					this.matrix[j-1][k].initalize();
 				}
 				if(end) break;
 			}
@@ -341,7 +338,7 @@ class Peca {
 		    	if (temp[h][w] === 1) {
 		        	this.matrix[h][w].type = this.id_type;
 		        } else {
-		        	this.matrix[h][w].initialize();
+		        	this.matrix[h][w].initalize();
 		        }
 		    }
 		}
@@ -363,7 +360,7 @@ class Peca {
 		    	if (temp[h][w] === 1) {
 		        	this.matrix[h][w].type = this.id_type;
 		        } else {
-		        	this.matrix[h][w].initialize();
+		        	this.matrix[h][w].initalize();
 		        }
 		    }
 		}
@@ -416,7 +413,7 @@ class Peca {
 						this.grid.style.right = left + ((w + 1) * CELL_SIZE) + "px";
 					}
 		        } else {
-		        	this.matrix[h][w].initialize();
+		        	this.matrix[h][w].initalize();
 		        }
 		    }
 		}
@@ -468,7 +465,7 @@ class Casa {
 		this.type = typeof id_type !== 'undefined' ? id_type : TYPE.EMPTY;
 	}
 
-	initialize() {
+	initalize() {
 		this.type = "EMPTY";
 	}
 
@@ -496,6 +493,8 @@ class Casa {
 	get HTML() {
 		return this.casa;
 	}
+
+
 }
 
 class CasaGrid extends Casa {
@@ -610,51 +609,16 @@ function initGame() {
 	score = new ScoreBoard();
 	chronometer = new Chronometer();
 	chronometer.start();
-<<<<<<< HEAD
+	gameState = 1;
 	nextPiece = new nextPiece();
 }
 
 function updateGame() {
-	if (!peca) {
-		peca = nextPiece.getNextPiece();
-		grilha.create(peca);
-		nextPiece.update();
-	}
-
-	if (grilha.collisionBottom(peca)) {
-		if (grilha.collisionTop(peca)) {
-			endGame();
-			return;
-		}
-		grilha.draw(peca);
-		grilha.destroy(peca);
-		var rows = grilha.checkRows(peca);
-		if (rows) score.calculateScore(rows);
-		peca = null;
-	} else {
-		peca.moveDown();
-	}
-	
-	if(speed != 0){
-		var futureSpeed = STARTINGSPEED - (parseInt(score.getPoints() / POINTSCALE) * 50)
-		speed = futureSpeed > 30 ? futureSpeed : 30;
-	}
-
-	// Variable speed 
-	// if (score / POINTSCALE % 1 == 0) {
-	// 	// 1/n
-	// 	speed -= speed > 200 ? 100 : 0; 
-	// }
-=======
-	gameState = 1;
-}
-
-function updateGame() {
 	if(gameState){
-		var type = TYPE[Math.floor(Math.random() * 6)];
 		if (!peca) {
-			peca = new Peca(4, 0, type);
+			peca = nextPiece.getNextPiece();
 			grilha.create(peca);
+			nextPiece.update();
 		}
 
 		if (grilha.collisionBottom(peca)) {
@@ -675,14 +639,7 @@ function updateGame() {
 			var futureSpeed = STARTINGSPEED - (parseInt(score.getPoints() / POINTSCALE) * 50)
 			speed = futureSpeed > 30 ? futureSpeed : 30;
 		}
-
-		// Variable speed 
-		// if (score / POINTSCALE % 1 == 0) {
-		// 	// 1/n
-		// 	speed -= speed > 200 ? 100 : 0; 
-		// }
 	}
->>>>>>> 858f2acbf8ab0f1f1fe623e900c5c4888fc6691a
 	game = setTimeout(updateGame, speed);
 }
 
@@ -727,22 +684,15 @@ function keyEvent(event) {
 	}
 }
 
-<<<<<<< HEAD
-function pararJogo(){
-	alert('Parando o jogo');
-	lastSpeed = speed;
-	speed = 0;
-=======
-var lastSpeed = STARTINGSPEED;
-
 function pausarJogo(){
 	gameState = 0;
 	// alert('Parando o jogo');
 	// lastSpeed = speed;
 	// speed = 0;
->>>>>>> 858f2acbf8ab0f1f1fe623e900c5c4888fc6691a
 }
 function continuarJogo(){
+	alert('Resumindo o jogo');
+	speed = lastSpeed;
 	gameState = 1;
 	// alert('Resumindo o jogo');
 	// speed = lastSpeed;
