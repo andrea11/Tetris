@@ -54,7 +54,8 @@ var grilha,
 	peca,
 	game,
 	chronometer,
-	score;
+	score,
+	gameState;
 
 // Class Grid \\
 /*
@@ -585,39 +586,42 @@ function initGame() {
 	score = new ScoreBoard();
 	chronometer = new Chronometer();
 	chronometer.start();
+	gameState = 1;
 }
 
 function updateGame() {
-	var type = TYPE[Math.floor(Math.random() * 6)];
-	if (!peca) {
-		peca = new Peca(4, 0, type);
-		grilha.create(peca);
-	}
-
-	if (grilha.collisionBottom(peca)) {
-		if (grilha.collisionTop(peca)) {
-			endGame();
-			return;
+	if(gameState){
+		var type = TYPE[Math.floor(Math.random() * 6)];
+		if (!peca) {
+			peca = new Peca(4, 0, type);
+			grilha.create(peca);
 		}
-		grilha.draw(peca);
-		grilha.destroy(peca);
-		var rows = grilha.checkRows(peca);
-		if (rows) score.calculateScore(rows);
-		peca = null;
-	} else {
-		peca.moveDown();
-	}
-	
-	if(speed != 0){
-		var futureSpeed = STARTINGSPEED - (parseInt(score.getPoints() / POINTSCALE) * 50)
-		speed = futureSpeed > 30 ? futureSpeed : 30;
-	}
 
-	// Variable speed 
-	// if (score / POINTSCALE % 1 == 0) {
-	// 	// 1/n
-	// 	speed -= speed > 200 ? 100 : 0; 
-	// }
+		if (grilha.collisionBottom(peca)) {
+			if (grilha.collisionTop(peca)) {
+				endGame();
+				return;
+			}
+			grilha.draw(peca);
+			grilha.destroy(peca);
+			var rows = grilha.checkRows(peca);
+			if (rows) score.calculateScore(rows);
+			peca = null;
+		} else {
+			peca.moveDown();
+		}
+		
+		if(speed != 0){
+			var futureSpeed = STARTINGSPEED - (parseInt(score.getPoints() / POINTSCALE) * 50)
+			speed = futureSpeed > 30 ? futureSpeed : 30;
+		}
+
+		// Variable speed 
+		// if (score / POINTSCALE % 1 == 0) {
+		// 	// 1/n
+		// 	speed -= speed > 200 ? 100 : 0; 
+		// }
+	}
 	game = setTimeout(updateGame, speed);
 }
 
@@ -664,12 +668,14 @@ function keyEvent(event) {
 
 var lastSpeed = STARTINGSPEED;
 
-function pararJogo(){
-	alert('Parando o jogo');
-	lastSpeed = speed;
-	speed = 0;
+function pausarJogo(){
+	gameState = 0;
+	// alert('Parando o jogo');
+	// lastSpeed = speed;
+	// speed = 0;
 }
 function continuarJogo(){
-	alert('Resumindo o jogo');
-	speed = lastSpeed;
+	gameState = 1;
+	// alert('Resumindo o jogo');
+	// speed = lastSpeed;
 }
