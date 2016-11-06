@@ -491,8 +491,6 @@ class Casa {
 	get HTML() {
 		return this.casa;
 	}
-
-
 }
 
 class CasaGrid extends Casa {
