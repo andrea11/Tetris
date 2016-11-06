@@ -56,6 +56,7 @@ var grilha,
 	chronometer,
 	score,
 	lastSpeed,
+	audio,
 	gameState;
 
 // Class Grid \\
@@ -611,6 +612,12 @@ function initGame() {
 	chronometer.start();
 	gameState = 1;
 	nextPiece = new nextPiece();
+	audio = new Audio('Tetris.mp3');
+	audio.addEventListener('ended', function() {
+	    this.currentTime = 0;
+	    this.play();
+	}, false);
+	audio.play();
 }
 
 function updateGame() {
@@ -647,6 +654,7 @@ function endGame() {
 	document.body.onkeydown = null;
 	chronometer.stop();
 	clearTimeout(game);
+	audio.stop();
 	alert("Fim de jogo! Pressione OK para jogar novamente");
 	location.reload();
 }
@@ -686,6 +694,7 @@ function keyEvent(event) {
 
 function pausarJogo(){
 	gameState = 0;
+	audio.pause();
 	// alert('Parando o jogo');
 	// lastSpeed = speed;
 	// speed = 0;
@@ -694,6 +703,7 @@ function continuarJogo(){
 	alert('Resumindo o jogo');
 	speed = lastSpeed;
 	gameState = 1;
+	audio.play();
 	// alert('Resumindo o jogo');
 	// speed = lastSpeed;
 }
