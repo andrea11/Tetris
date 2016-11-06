@@ -90,27 +90,27 @@ class Grid {
 
 	}
 
-	checkLines(peca) {
-		var linesFilled = [];
+	checkRows(peca) {
+		var rowsFilled = [];
 		for (var i = peca.y - 1; i >= peca.y - 4 && i>=0 ; i--) {
 			for (var j = 0; j < WIDTH; j++) {
 				if (!this.matrix[i][j].status) {
 					break;
 				}else if (j == WIDTH - 1){
-					linesFilled[linesFilled.length] = i;
+					rowsFilled[rowsFilled.length] = i;
 				}
 			}
 		}
-		if(linesFilled.length){
-			this.removeLines(linesFilled);
+		if(rowsFilled.length){
+			this.removeRows(rowsFilled);
 		}
-		return linesFilled.length;
+		return rowsFilled.length;
 	}
-	removeLines(lines){
-		for (var i = lines.length - 1; i >= 0; i--) {
+	removeRows(rows){
+		for (var i = rows.length - 1; i >= 0; i--) {
 			var end = 1;
 
-			for (var j = lines[i]; j > 0; j--) {
+			for (var j = rows[i]; j > 0; j--) {
 				for (var k = 0; k < WIDTH; k++) {
 					if (this.matrix[j-1][k].status) {
 						end = 0;
@@ -375,11 +375,11 @@ class Peca {
 			emptyColumn = 0;
 
 		// Check if there is one or more empty line
-		lines:
+		rows:
 		for (var h = length - 1; h >= 0 ; h--) {
 			for (var w = length - 1; w >= 0 ; w--) {
 				if (this.matrix[h][w].status) {
-					break lines;
+					break rows;
 				}
 			}
 			emptyLine++;
@@ -504,22 +504,35 @@ class CasaGrid extends Casa {
 	}
 }
 
-class Score {
+class ScoreBoard {
 	constructor() {
-		this.score = document.getElementById("score");
-		this.score.innerHTML = "0";
-		this.lines = document.getElementById("lines");
-		this.lines.innerHTML = "0";
+		this.score = 0;
+		this.level = 1;
+		this.deletedRows = 0;
+		this.scoreLabel = document.getElementById("scoreLabel");
+		this.scoreLabel.innerHTML = "Pontuacao: " + this.score;
+		this.levelLabel = document.getElementById("levelLabel");
+		this.levelLabel.innerHTML = "Nivel: " + this.level;
+		this.rowsLabel = document.getElementById("rowsLabel");
+		this.rowsLabel.innerHTML = "Linhas eliminadas: " + this.deletedRows;
 	}
 
-	addLines(lines) {
-		var points = (lines * 10) * lines;
-		this.lines.innerHTML = parseInt(this.lines.innerHTML) + lines;
-		this.score.innerHTML = parseInt(this.score.innerHTML) + points;
+	calculateScore(rows) {
+		var scored = (rows * 10) * rows;
+		this.score += scored;
+		this.deletedRows += rows;
+		this.level = parseInt(this.score / POINTSCALE) + 1;
+		this.rowsLabel.innerHTML = "Linhas eliminadas: " + this.deletedRows;
+		this.scoreLabel.innerHTML = "Pontuacao: " + this.score;
+		this.levelLabel.innerHTML = "Nivel: " + this.level;
 	}
 
 	getPoints(){
-		return parseInt(this.score.innerHTML);
+		return this.score;
+	}
+
+	getDeletedRows(){
+		return this.deletedRows;
 	}
 }
 
@@ -541,7 +554,7 @@ class Chronometer {
 		if (sec < 10){
 			sec = "0" + sec;
 		}
-		this.chrono.innerHTML = min + ":" + sec;
+		this.chrono.innerHTML = "Tempo: " + min + ":" + sec;
 		var temp = this;
 		this.timerID = setTimeout(function () {
      		temp.start();
@@ -565,9 +578,9 @@ document.onreadystatechange = function () {
 function initGame() {
 	grilha = new Grid(WIDTH, HEIGHT);
 	document.body.appendChild(grilha.HTML);
-	score = document.getElementById("score");
+	score = document.getElementById("scoreLabel");
 	speed = STARTINGSPEED;
-	score = new Score();
+	score = new ScoreBoard();
 	chronometer = new Chronometer();
 	chronometer.start();
 }
@@ -586,8 +599,8 @@ function updateGame() {
 		}
 		grilha.draw(peca);
 		grilha.destroy(peca);
-		var lines = grilha.checkLines(peca);
-		if (lines) score.addLines(lines);
+		var rows = grilha.checkRows(peca);
+		if (rows) score.calculateScore(rows);
 		peca = null;
 	} else {	
 		peca.moveDown();
@@ -623,8 +636,8 @@ function keyEvent(event) {
 				}
 				grilha.draw(peca);
 				grilha.destroy(peca);
-				var lines = grilha.checkLines(peca);
-				if (lines) score.addLines(lines);
+				var rows = grilha.checkRows(peca);
+				if (rows) score.calculateScore(rows);
 				peca = null;
 			} else {
 				peca.moveDown();
