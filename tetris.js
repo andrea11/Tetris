@@ -87,7 +87,6 @@ class Grid {
 
 		this.time = document.getElementById("chrono");
 		this.point = document.getElementById("score");
-
 	}
 
 	checkRows(peca) {
@@ -419,10 +418,15 @@ class Peca {
 	}
 
 	moveDown() {
+		if(speed != 0){
+			
+			
+		
 		var top = isNaN(parseInt(this.grid.style.top)) ? 0 : parseInt(this.grid.style.top);
 		if (top >= - 4 * CELL_SIZE && top < MAX_HEIGHT - 4 * CELL_SIZE) {
 			this.grid.style.top = top + CELL_SIZE + "px";
 			if (this.y < HEIGHT) this.y++;
+		}
 		}
 	}
 
@@ -602,11 +606,15 @@ function updateGame() {
 		var rows = grilha.checkRows(peca);
 		if (rows) score.calculateScore(rows);
 		peca = null;
-	} else {	
+	} else {
 		peca.moveDown();
 	}
-	var futureSpeed = STARTINGSPEED - (parseInt(score.getPoints() / POINTSCALE) * 50)
-	speed = futureSpeed > 30 ? futureSpeed : 30;
+	
+	if(speed != 0){
+		var futureSpeed = STARTINGSPEED - (parseInt(score.getPoints() / POINTSCALE) * 50)
+		speed = futureSpeed > 30 ? futureSpeed : 30;
+	}
+
 	// Variable speed 
 	// if (score / POINTSCALE % 1 == 0) {
 	// 	// 1/n
@@ -619,6 +627,8 @@ function endGame() {
 	document.body.onkeydown = null;
 	chronometer.stop();
 	clearTimeout(game);
+	alert("Fim de jogo! Pressione OK para jogar novamente");
+	location.reload();
 }
 
 function keyEvent(event) {
@@ -652,4 +662,16 @@ function keyEvent(event) {
 			}
 		}
 	}
+}
+
+var lastSpeed = STARTINGSPEED;
+
+function pararJogo(){
+	alert('Parando o jogo');
+	lastSpeed = speed;
+	speed = 0;
+}
+function continuarJogo(){
+	alert('Resumindo o jogo');
+	speed = lastSpeed;
 }
