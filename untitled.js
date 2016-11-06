@@ -178,7 +178,7 @@ class Grid {
 		return false;
 	}
 
-	collisionBorderLeft(piece) { //check if the piece is colliding with matrix's left border
+	collisionBorderLeft(piece) { //check if the piece is colliding with matrix's left
 		var x = piece.x,
 			y = piece.y,
 			length = piece.matrix.length;
@@ -197,7 +197,7 @@ class Grid {
 		return false;
 	}
 
-	collisionBorderRight(piece) { //check if the piece is colliding with matrix's right border
+	collisionBorderRight(piece) { //check if the piece is colliding with matrix's right
 		if (parseInt(piece.grid.style.right) >= MAX_WIDTH) {
 			return true;
 		}
@@ -291,6 +291,7 @@ class Peca {
 		}
 		return temp;
 	}
+
 	rotateToRight() { //rotate the piece to right
 		var temp = STRUCTURE["EMPTY"].map(function(arr) {
 				return arr.slice();
@@ -366,15 +367,10 @@ class Peca {
 	}
 
 	moveDown() { //move the piece to down
-		if(speed != 0){
-			
-			
-		
 		var top = isNaN(parseInt(this.grid.style.top)) ? 0 : parseInt(this.grid.style.top);
 		if (top >= - 4 * CELL_SIZE && top < MAX_HEIGHT - 4 * CELL_SIZE) {
 			this.grid.style.top = top + CELL_SIZE + "px";
 			if (this.y < HEIGHT) this.y++;
-		}
 		}
 	}
 
@@ -439,8 +435,6 @@ class Casa {
 	get HTML() {
 		return this.casa;
 	}
-
-
 }
 
 class CasaGrid extends Casa {
@@ -518,26 +512,6 @@ class Chronometer {
 	}
 }
 
-class nextPiece {
-	constructor() {
-		this.piece = document.getElementById("nextPiece");
-		this.update();
-	}
-
-	update() {
-		if (this.nextPiece) {
-			this.piece.removeChild(this.nextPiece.HTML);
-		}
-		this.type = TYPE[Math.floor(Math.random() * 6)]; //randomize a new piece
-		this.nextPiece = new Peca(0, 4, this.type);
-		this.piece.appendChild(this.nextPiece.HTML);
-	}
-
-	getNextPiece() {
-		return new Peca(4, 0, this.type);
-	}
-}
-
 // Main
 document.onreadystatechange = function () {
 	var state = document.readyState
@@ -556,15 +530,14 @@ function initGame() {
 	chronometer = new Chronometer();
 	chronometer.start();
 	gameState = 1;
-	nextPiece = new nextPiece();
 }
 
 function updateGame() {
 	if(gameState){
+		var type = TYPE[Math.floor(Math.random() * 6)]; //randomize a new piece
 		if (!piece) {
-			piece = nextPiece.getNextPiece();
+			piece = new Peca(4, 0, type);
 			grilha.create(piece);
-			nextPiece.update();
 		}
 
 		if (grilha.collisionBottom(piece)) {
@@ -581,7 +554,7 @@ function updateGame() {
 			piece.moveDown();
 		}
 		
-		var futureSpeed = STARTINGSPEED - (parseInt(score.getPoints() / POINTSCALE) * 50)
+		var futureSpeed = STARTINGSPEED - (parseInt(score.getPoints() / POINTSCALE) * 50);
 		speed = futureSpeed > 30 ? futureSpeed : 30;
 	}
 	game = setTimeout(updateGame, speed);
