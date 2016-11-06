@@ -1,21 +1,29 @@
 		body {
-			background-image: url('bg.jpg');
+			background-image: url('bg1.jpg');
+		}
+		h1{
+			text-align: center;
+			color: white; 
+			font-family: 'Helvetica Neue', sans-serif;
+			font-size: 42px;
 		}
 		#infos {
-			float: right;
+			/*float: right;*/
 			color: white; 
 			font-family: 'Helvetica Neue', sans-serif; 
 			font-size: 20px; 
 			line-height: 24px;
-			margin: 0 0 24px; 
+			/*margin: 0 0 24px; */
+			margin: auto;
+			width: 9%;
 		}
 		#matrix {
-		border-width: 2px;
-		width: 228px;
-		height: 456px;
-		position: relative;
-		overflow: hidden;		
-		margin: 0 auto; 
+			margin: 0 auto;
+			border-width: 2px;
+			width: 228px;
+			height: 456px;
+			position: relative;
+			overflow: hidden;
 		}
 		#matrix div{
 			margin: 1px;
@@ -111,6 +119,6 @@
 
 		#scoreLabel {
 			/*height: 100px;*/
-			position: relative;
-			overflow: hidden;
+			/*position: relative;*/
+			/*overflow: hidden;*/
 		}
