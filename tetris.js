@@ -91,40 +91,39 @@ class Grid {
 	}
 
 	checkLines(peca) {
-		var lines = 0,
-			lineFilled,
-			height = peca.y;
-		for (var h = peca.y - 1; h >= peca.y - 4 && h > 0; h--) {
-			lineFilled = true;
-			for (var w = WIDTH - 1; w >= 0; w--) {
-				if (!this.matrix[h][w].status) {
-					lineFilled = false;
-					if (!lines) height--;
+		var linesFilled = [];
+		for (var i = peca.y - 1; i >= peca.y - 4 && i>=0 ; i--) {
+			for (var j = 0; j < WIDTH; j++) {
+				if (!this.matrix[i][j].status) {
 					break;
+				}else if (j == WIDTH - 1){
+					linesFilled[linesFilled.length] = i;
 				}
 			}
-			if (lineFilled) lines++;			
 		}
-		if (lines !== 0) {
-			this.removeLines(height, lines);
+		if(linesFilled.length){
+			this.removeLines(linesFilled);
 		}
-		return lines;
+		return linesFilled.length;
 	}
+	removeLines(lines){
+		for (var i = lines.length - 1; i >= 0; i--) {
+			var end = 1;
 
-	removeLines(firstLine, lines) {
-		for (var h = firstLine - 1 - lines; h >= 0; h--) {
-			for (var w = 0; w < WIDTH; w++) {
-				this.matrix[h+lines][w].type = this.matrix[h][w].type;
+			for (var j = lines[i]; j > 0; j--) {
+				for (var k = 0; k < WIDTH; k++) {
+					if (this.matrix[j-1][k].status) {
+						end = 0;
+					}
+					this.matrix[j][k].type = this.matrix[j-1][k].type;
+					this.matrix[j-1][k].initalize();
+				}
+				if(end) break;
 			}
 		}
 
-		for (var h = 0; h < lines; h++) {
-			for (var w = 0; w < WIDTH; w++) {
-				this.matrix[h][w].initalize();
-			}
-		}
-	}
 
+	}
 	create(peca) {
 		this.grid.appendChild(peca.HTML);
 	}
