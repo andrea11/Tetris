@@ -70,6 +70,45 @@
 			height: 15px;
 			float: left;
 		}
+
+		#nextPiece {
+			border-width: 2px;
+			height: 76px;
+			position: relative;
+			overflow: hidden;		
+			margin: 0 auto; 
+		}
+
+		#nextPiece div#peca {
+			width: 76px;
+			height: 76px;
+			top: 0;
+			border-width: 0;
+			margin: 0;
+			background-color: transparent;
+			position: i;
+			z-index: 1;
+		}
+
+		#nextPiece div.red {
+			background-color: #f44336;
+		}
+		#nextPiece div.blue {
+			background-color: #2196f3;
+		}
+		#nextPiece div.yellow {
+			background-color: #ffeb3b;
+		}
+		#nextPiece div.green {
+			background-color: #8bc34a;
+		}
+		#nextPiece div.orange {
+			background-color: #ff9800;
+		}
+		#nextPiece div.indigo {
+			background-color: #3f51b5;
+		}
+
 		#scoreLabel {
 			/*height: 100px;*/
 			position: relative;

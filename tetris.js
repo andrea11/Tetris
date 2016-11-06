@@ -54,7 +54,8 @@ var grilha,
 	peca,
 	game,
 	chronometer,
-	score;
+	score,
+	lastSpeed;
 
 // Class Grid \\
 /*
@@ -570,6 +571,26 @@ class Chronometer {
 	}
 }
 
+class nextPiece {
+	constructor() {
+		this.piece = document.getElementById("nextPiece");
+		this.update();
+	}
+
+	update() {
+		if (this.nextPiece) {
+			this.piece.removeChild(this.nextPiece.HTML);
+		}
+		this.type = TYPE[Math.floor(Math.random() * 6)];
+		this.nextPiece = new Peca(0, 4, this.type);
+		this.piece.appendChild(this.nextPiece.HTML);
+	}
+
+	getNextPiece() {
+		return new Peca(0, 0, this.type);
+	}
+}
+
 // Main
 document.onreadystatechange = function () {
 	var state = document.readyState
@@ -587,13 +608,14 @@ function initGame() {
 	score = new ScoreBoard();
 	chronometer = new Chronometer();
 	chronometer.start();
+	nextPiece = new nextPiece();
 }
 
 function updateGame() {
-	var type = TYPE[Math.floor(Math.random() * 6)];
 	if (!peca) {
-		peca = new Peca(4, 0, type);
+		peca = nextPiece.getNextPiece();
 		grilha.create(peca);
+		nextPiece.update();
 	}
 
 	if (grilha.collisionBottom(peca)) {
@@ -663,8 +685,6 @@ function keyEvent(event) {
 		}
 	}
 }
-
-var lastSpeed = STARTINGSPEED;
 
 function pararJogo(){
 	alert('Parando o jogo');
